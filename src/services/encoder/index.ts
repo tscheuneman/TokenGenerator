@@ -6,11 +6,11 @@ export const encodeTimeIdentity = (identity: string) => {
 
     const identityBuffer = stringToArrayBuffer(identity);
 
-    const theFinal = new Uint8Array(dateBuffer.byteLength + identityBuffer.byteLength);
-    theFinal.set(new Uint8Array(dateBuffer), 0);
-    theFinal.set(new Uint8Array(identityBuffer), dateBuffer.byteLength);
+    const dateIdentityBuffer = new Uint8Array(dateBuffer.byteLength + identityBuffer.byteLength);
+    dateIdentityBuffer.set(new Uint8Array(dateBuffer), 0);
+    dateIdentityBuffer.set(new Uint8Array(identityBuffer), dateBuffer.byteLength);
 
 
-    return Buffer.from(theFinal).toString('base64');
+    return Buffer.from(dateIdentityBuffer).toString('base64');
 }
 
