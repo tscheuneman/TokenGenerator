@@ -14,3 +14,6 @@ export const encodeTimeIdentity = (identity: string) => {
     return Buffer.from(dateIdentityBuffer).toString('base64');
 }
 
+export const toBase64 = (data: string) => {
+    return Buffer.from(data, 'utf-8').toString('base64');
+}

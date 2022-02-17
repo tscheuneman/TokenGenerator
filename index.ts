@@ -1,10 +1,11 @@
-import { encodeTimeIdentity } from './src/services/encoder';
-import { decodeTimeIdentity } from './src/services/decoder';
+import TokenGenerator from './src/index';
 
-const base64EncodedString = encodeTimeIdentity('372c4670-77e2-4e36-b282-0015fdaf1eb2');
+const tokenGen = new TokenGenerator('secret');
 
-console.log('base64', base64EncodedString);
+const base64EncodedString = tokenGen.sign('372c4670-77e2-4e36-b282-0015fdaf1eb2', { test: 'one', other: 'two' });
 
-const decodedString = decodeTimeIdentity(base64EncodedString);
+console.log(base64EncodedString);
 
-console.log('decoded', decodedString);
+const decoded = tokenGen.decode(base64EncodedString, '372c4670-77e2-4e36-b282-0015fdaf1eb2');
+
+console.log(decoded);
