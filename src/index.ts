@@ -2,10 +2,22 @@ import { encodeTimeIdentity, toBase64 } from './services/encoder';
 import { decodeTimeIdentity, decodeBase64 } from './services/decoder';
 import { generateHash } from './services/crypto';
 
+import { TokenGeneratorOptions } from './types';
+
+const defaults: TokenGeneratorOptions = {
+    timeValidMs: (1000 * 60) * 60
+}
+
 class TokenGenerator {
     private secret: string;
-    constructor(secret: string) {
+    private options: TokenGeneratorOptions;
+
+    constructor(secret: string, options?: TokenGeneratorOptions) {
         this.secret = secret;
+        this.options = {
+            ...defaults,
+            ...options
+        };
     }
 
     sign(identity: string, data: any) {
@@ -13,14 +25,23 @@ class TokenGenerator {
         return toBase64(`${generateHash(this.secret, identity)}:${encoded}`);
     }
 
-    encode(identity: string, data: any): string {
+    verify(token: string, identity: string) {
+        const {dateIdentity, data} = this.decode(token, identity);
+        if(Date.now() <= dateIdentity.datetime + this.options.timeValidMs) {
+            return data;
+        } else {
+            throw Error('Token is expired');
+        }
+    }
+
+    private encode(identity: string, data: any): string {
         const dateIdentity = encodeTimeIdentity(identity);
         const encodedData = toBase64(JSON.stringify(data));
 
         return toBase64(`${dateIdentity}:${encodedData}`);
     }
 
-    decode(token: string, identity: string) {
+    private decode(token: string, identity: string) {
         const decodedToken = decodeBase64(token);
         const [signature, encodedToken] = decodedToken.split(':');
         if(signature === generateHash(this.secret, identity)) {
