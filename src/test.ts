@@ -21,4 +21,9 @@ describe('Tests for inital classes', () => {
 
         expect(() => generator.verify(token, 'test2')).toThrow();
     });
+
+    it('Should Encode and fail to decode with an inproper identity', () => {
+        generator.verify(undefined, 'test2');
+        expect(() => generator.verify('test-token', 'test2')).toThrow();
+    });
 });

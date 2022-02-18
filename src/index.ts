@@ -26,6 +26,9 @@ class TokenGenerator {
     }
 
     verify(token: string, identity: string) {
+        if(!token) {
+            throw Error('Token is Invalid');
+        } 
         const {dateIdentity, data} = this.decode(token, identity);
         if(Date.now() <= dateIdentity.datetime + this.options.timeValidMs) {
             return data;
